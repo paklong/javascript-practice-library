@@ -8,13 +8,38 @@ function Book(title, author, year, pages, read = false) {
     this.read = read;
 }
 
+
+Book.prototype.toggleRead = function () {
+    this.read = !this.read;
+
+}
+
 function addBookToLibrary(book) {
     myLibrary.push(book);
 }
 
-function displayBook(book) {
+
+function resetBookShelf() {
+    const bookshelf = document.querySelector('.bookshelf');
+    while (bookshelf.firstChild) {
+        bookshelf.removeChild(bookshelf.firstChild);
+    }
+}
+
+
+function displayBook(book, index) {
+
     const bookDiv = document.createElement('div');
     bookDiv.classList.add('book');
+
+    const toggleReadBtn = document.createElement('input');
+    toggleReadBtn.setAttribute('type', 'checkbox');
+    toggleReadBtn.checked = book.read;
+    toggleReadBtn.addEventListener('change', () => {
+        book.toggleRead();
+        displayLibrary();
+    });
+
 
     for (const key in book) {
         if (Object.prototype.hasOwnProperty.call(book, key)) {
@@ -27,26 +52,57 @@ function displayBook(book) {
             }
         }
     }
+    const reomveBtn = document.createElement('button');
+    reomveBtn.textContent = 'Remove';
+    reomveBtn.setAttribute('data-index', index);
+    reomveBtn.addEventListener('click', removeBook);
+    bookDiv.append(reomveBtn);
+
+
+    bookDiv.append(toggleReadBtn);
+
+
     const bookshelf = document.querySelector('.bookshelf');
     bookshelf.appendChild(bookDiv);
 }
 
-function displayLibrary(library) {
-    library.map(displayBook);
+function displayLibrary() {
+    resetBookShelf();
+    myLibrary.forEach((book, index) => {
+        displayBook(book, index)
+    });;
 }
 
-const book1 = new Book("To Kill a Mockingbird", "Harper Lee", 1960, 281);
-const book2 = new Book("1984", "George Orwell", 1949, 328, true);
-const book3 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1925, 180);
-const book4 = new Book("Moby Dick", "Herman Melville", 1851, 635);
 
-addBookToLibrary(book1);
-addBookToLibrary(book2);
-addBookToLibrary(book3);
-addBookToLibrary(book4);
-addBookToLibrary(book1);
-addBookToLibrary(book2);
-addBookToLibrary(book3);
-addBookToLibrary(book4);
+function removeBook(e) {
+    const index = e.target.getAttribute('data-index');
+    myLibrary.splice(index, 1);
+    console.log(myLibrary);
+    displayLibrary();
+}
 
-displayLibrary(myLibrary);
+const bookshelf = document.querySelector('.bookshelf');
+
+
+const title = document.querySelector('#title');
+const author = document.querySelector('#author');
+const year = document.querySelector('#year');
+const pages = document.querySelector('#pages');
+const read = document.querySelector('#read');
+const addBtn = document.querySelector('#add-btn');
+
+
+
+addBtn.addEventListener(
+    'click', (e) => {
+        addNewBook(e);
+        displayLibrary();
+    }
+)
+
+function addNewBook(e) {
+    e.preventDefault();
+    const book = new Book(title.value, author.value, year.value, pages.value, read.checked);
+    addBookToLibrary(book);
+}
+

@@ -2,12 +2,16 @@
     box-sizing: border-box;
 }
 
-.bookshelf {
+.bookshelf,
+.form-input {
     font-size: 20px;
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 10px;
 }
+
+
 
 .book {
     border: 1px black solid;
@@ -18,4 +22,12 @@
 
 .isRead {
     background-color: aqua;
+}
+
+.add-book {
+    margin-bottom: 10px;
+    border: 1px black solid;
+    padding: 10px;
+    border-radius: 16px;
+
 }
